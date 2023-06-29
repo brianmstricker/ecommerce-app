@@ -1,17 +1,29 @@
 "use client";
 import Button from "@/components/Button";
 import Input from "@/components/Input";
+import { signIn } from "next-auth/react";
 import { useCallback, useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 
 const Page = () => {
+  const [isLoading, setIsLoading] = useState(false);
   const [variant, setVariant] = useState("login");
   const toggleVariant = useCallback(() => {
     setVariant((current) => (current === "login" ? "register" : "login"));
   }, []);
+  const loginWithGoogle = async () => {
+    setIsLoading(true);
+    try {
+      await signIn("google", { callbackUrl: "/" });
+    } catch (error) {
+      throw new Error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
   return (
-    <div className="w-[100vw] sm:max-w-lg mx-auto h-[92.3vh] sm:h-fit bg-slate-900 sm:mt-10 sm:rounded-md">
-      <div className="pt-12 sm:pt-16 pb-8 p-4 pl-4 sm:ml-12 flex flex-col items-center sm:block">
+    <div className="w-[100vw] sm:max-w-lg mx-auto h-[92.3vh] sm:h-fit bg-slate-900 sm:mt-20 sm:rounded-md">
+      <div className="pt-12 sm:pt-16 pb-16 p-4 pl-4 sm:ml-12 flex flex-col items-center sm:block">
         <h1 className="text-4xl text-white">
           {variant === "login" ? "Sign In" : "Register"}
         </h1>
@@ -42,7 +54,10 @@ const Page = () => {
           </p>
           <div className="mt-14">
             <p className="text-gray-400">Or Sign in with</p>
-            <div className="bg-white rounded-md flex items-center justify-center p-2 cursor-pointer gap-2 mt-2">
+            <div
+              onClick={loginWithGoogle}
+              className="bg-white rounded-md flex items-center justify-center p-2 cursor-pointer gap-2 mt-2"
+            >
               <FcGoogle className="text-4xl" />
               <p className="text-3xl">Google</p>
             </div>
