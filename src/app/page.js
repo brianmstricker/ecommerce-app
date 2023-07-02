@@ -3,9 +3,9 @@ import Link from "next/link";
 const Links = [{ name: "Home" }, { name: "Products" }, { name: "Categories" }];
 export default function Home() {
   return (
-    <main>
-      <nav className="max-w-[100rem] mx-auto flex flex-col">
-        <div className="flex  justify-center items-center gap-5 pt-8">
+    <main className="max-w-[100rem] mx-auto px-4 lg:px-2">
+      <nav className="flex flex-col">
+        <div className="flex justify-center items-center gap-5 pt-8">
           {Links.map((link) => (
             <Link
               key={link.name}

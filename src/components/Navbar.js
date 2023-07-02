@@ -5,12 +5,13 @@ import { RiShoppingCartLine } from "react-icons/ri";
 import { BsHeart } from "react-icons/bs";
 import { getAuthSession } from "@/lib/auth";
 import Image from "next/image";
+import { LinkButton, SignOutButton } from "./Button";
 
 const Navbar = async () => {
   const session = await getAuthSession();
   return (
     <>
-      <nav className="max-w-[100rem] mx-auto py-4 flex justify-between items-center text-xl px-6 border-b border-black">
+      <nav className="max-w-[100rem] mx-auto py-4 flex justify-between items-center text-xl px-4 lg:px-2 border-b border-black">
         <Link
           href="/"
           passHref
@@ -49,17 +50,18 @@ const Navbar = async () => {
                     className="rounded-full object-contain"
                   />
                 </span>
-                <span className="hidden md:block">
-                  Hi, {session?.user?.name}
-                </span>
+                <span className="hidden md:block">{session?.user?.name}</span>
               </Link>
-              <div className="absolute bg-transparent md:w-80 h-8">
-                <div className="hidden max-w-80 group-hover:md:block absolute bg-slate-800 rounded-md shadow-lg py-2 px-4 text-neutral-200 text-lg mt-4 w-fit">
+              <div className="absolute group-hover:md:w-80 h-8">
+                <div className="hidden max-w-80 group-hover:md:block absolute bg-slate-800 rounded-md shadow-lg py-2 px-4 pb-4 text-neutral-200 text-lg mt-4 w-fit z-10">
                   <ul>
                     <li>Signed in as: {session?.user?.email}</li>
-                    <Link href={"/profile"} passHref>
-                      <li>My Account</li>
-                    </Link>
+                    <LinkButton
+                      text={"Admin"}
+                      href={"/admin"}
+                      className={"w-full mt-2"}
+                    />
+                    <SignOutButton className="mt-2 w-full" />
                   </ul>
                 </div>
               </div>
