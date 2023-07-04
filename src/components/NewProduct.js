@@ -1,5 +1,9 @@
-import { useState } from "react";
+"use client";
+import axios from "axios";
+import { useCallback, useState } from "react";
 import { IoClose } from "react-icons/io5";
+import { CldUploadWidget } from "next-cloudinary";
+import { AiOutlineUpload } from "react-icons/ai";
 
 const FormGroup = ({ children }) => (
   <div className="flex flex-col sm:flex-row justify-between items-center">
@@ -14,21 +18,41 @@ const NewProduct = ({ show, onClose }) => {
     brand: "",
     category: "",
     colors: [],
-    image: "",
+    images: [],
   });
   function updateForm(key) {
     return (e) => {
       setForm({ ...form, [key]: e.target.value });
     };
   }
-  function submitForm(e) {
+  const handleUpload = useCallback(
+    (results) => {
+      const images = results.info.secure_url;
+      setForm({ ...form, images: [...form.images, images] });
+    },
+    [form]
+  );
+  async function submitForm(e) {
     e.preventDefault();
     const { colors, ...rest } = form;
     const product = {
       ...rest,
       colors: colors.split(/[ ,]+/),
     };
-    console.log(product);
+    try {
+      await axios.post("/api/products", product);
+      setForm({
+        name: "",
+        price: 0,
+        description: "",
+        brand: "",
+        category: "",
+        colors: [],
+        images: [],
+      });
+    } catch (error) {
+      throw new Error(error);
+    }
   }
   if (!show) return null;
   return (
@@ -38,7 +62,7 @@ const NewProduct = ({ show, onClose }) => {
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="bg-white relative md:ml-36 lg:ml-64 px-4 py-2 rounded-md sm:w-[35rem] lg:w-[40rem] mt-20 md:mt-0"
+        className="bg-white relative px-4 py-2 rounded-md sm:w-[35rem] lg:w-[40rem] mt-24 md:mt-0"
       >
         <h1 className="text-center text-4xl mb-8 mr-6 mt-2">Add a Product</h1>
         <button onClick={onClose} className="absolute right-0 top-0">
@@ -118,23 +142,36 @@ const NewProduct = ({ show, onClose }) => {
             />
           </FormGroup>
           <FormGroup>
-            <label htmlFor="image">Image(s)</label>
-            <input
-              type="file"
-              name="image"
-              id="image"
-              placeholder="Enter product image"
-              className="border border-gray-400 rounded-md px-2 py-1 max-w-[200px]"
-              value={form.image}
-              onChange={updateForm("image")}
-            />
+            <label htmlFor="images">Image(s)</label>
+            <CldUploadWidget
+              onUpload={handleUpload}
+              uploadPreset="no7neva9"
+              options={{
+                maxFiles: 10,
+                resourceType: "image",
+              }}
+            >
+              {({ open }) => {
+                return (
+                  <button
+                    type="button"
+                    onClick={() => open?.()}
+                    className="border border-gray-400 rounded-md px-2 py-1 max-w-[200px] w-full flex items-center justify-center flex-col"
+                  >
+                    <AiOutlineUpload size={32} />
+                    <span className="font-bold">Upload</span>
+                  </button>
+                );
+              }}
+            </CldUploadWidget>
           </FormGroup>
           <button
             type="submit"
-            className="bg-blue-500 text-white px-4 py-2 rounded-md"
+            className="bg-blue-500 text-white px-4 py-2 rounded-md mt-4"
           >
             Add Product
           </button>
+          {}
         </form>
       </div>
     </div>

@@ -13,12 +13,10 @@ const Layout = ({ children }) => {
   const [menu, setMenu] = useState(false);
   const path = usePathname();
   return (
-    <div className="flex max-w-[100rem] min-h-[90vh] mx-auto py-4 relative">
+    <div className="flex max-w-[100rem] min-h-[90vh] mx-auto py-1 relative">
       <LiaBarsSolid
         onClick={() => setMenu(!menu)}
-        className={`md:hidden text-3xl z-20 mt-1 ml-1 ${
-          menu ? "text-white" : ""
-        }`}
+        className={`md:hidden text-3xl z-20 ml-1 ${menu ? "text-white" : ""}`}
       />
       <aside className="border-blue-600 border-2 rounded-lg max-w-[375px] p-4 px-6 ml-2 hidden md:block">
         <Link href="/admin">
